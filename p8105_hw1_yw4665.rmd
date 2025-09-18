@@ -76,5 +76,45 @@ ggsave(filename = "temp_vs_time.png", plot = plot_time_temp)
 ```
 
 ### Problem 2
+First, we import the tidyverse library:
+```{r}
+library(tidyverse)
+```
+Now we create a tibble object with name 'desired_df' and assign values to it. Since we are creating random samples, first set a seed for reproducibility:
+```{r}
+set.seed(10)
+desired_df = tibble(
+  random_nums = rnorm(10),
+  logicals = random_nums > 0,
+  characters = c("a","b","c","d","e","f","g","h","i","k"),
+  factors = factor(sample(c("low","med","high"), 10, replace = TRUE))
+)
+
+desired_df
+```
+Next, we try to get the mean of each variable in this dataframe. We can get the mean of variable 'random_nums' with:
+```{r}
+mean(pull(desired_df, random_nums))
+```
+We can also get the mean of variable 'logicals':
+```{r}
+mean(pull(desired_df, logicals))
+```
+Getting the mean from the variable 'characters' gives us a warning: "argument is not numeric or logical: returning NA"
+```{r}
+mean(pull(desired_df, characters))
+```
+Getting the mean from the variable 'factors' gives the same warning as well:
+```{r}
+mean(pull(desired_df, factors))
+```
+Next we try to convert the non-numeric values to numeric values with 'as.numeric':
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+as.numeric(pull(desired_df, logicals))
+as.numeric(pull(desired_df, characters))
+as.numeric(pull(desired_df, factors))
+```
+For logical values, they have a numeric form of True=1 and False=0, therefore they can be properly transformed and be treated as numeric values. This explains why logical values can have a mean. For character values, there does not exist a map between number and characters, so they are forced to become null values (NA), this also explains why we previously saw a warning. For factor values, they are forced to numeric values based on their factor level (In this case "high" to 1 "med" to 3 and "low" to 2), but factor variables themselves cannot be treated as numeric values and therefore cannot have a mean.
+
 
 
